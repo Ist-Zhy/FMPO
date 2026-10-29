@@ -1,0 +1,52 @@
+# configs/Flow_Train_RL.yaml
+# ==========================================
+# 1. 模型结构参数 (必须与 SFT 预训练时的配置完全一致)
+# ==========================================
+Diffusion:
+  dim: 64
+  image_size: 256         # 输入尺寸 (对应切好的 Patch 大小)
+  sampling_timesteps: 1   # Flow Matching 推理步数
+  objective: 'pred_res'   # 预测残差
+  loss_type: 'l1'
+  condition: True         # 是否使用条件控制 (IR/VI)
+  sum_scale: 1
+  input_condition: False
+  input_condition_mask: False
+  num_unet: 1
+  test_res_or_noise: "res"
+
+# ==========================================
+# 2. RL 训练特有参数 (Stage 2 参数)
+# ==========================================
+RL_parameters:
+  # [路径] SFT 权重的路径 (你的 Base Model)
+  sft_checkpoint_path: './results/Fusion_64/model-30.pt'
+  # [输出] 结果保存路径
+  results_folder: './results_FMPO/Fusion_GRPO_64'
+  # [训练设置]
+  train_num_steps: 10000        # 总训练步数
+  save_every: 1000               # 保存频率
+  lr: 3.0e-6                    # 微调学习率 (建议极小) # 3.0e-6
+  # [GRPO 核心参数]
+  group_size: 4                 # 每张图片生成多少个变体进行对比 (Group Size)
+                                # 显存占用 = batch_size * group_size * model_size
+                                # 推荐: 4 或 8
+  # [探索策略]
+  epsilon: 0.08                 # 初始扰动大小 (会被代码中的线性衰减覆盖)
+
+# ==========================================
+# 3. 数据集配置 (已简化，适配离线 Patch)
+# ==========================================
+Dataset_Configs:
+  IVF:
+    data:
+      # 指向包含 'Train' 与 'Val' 的父目录
+      # 代码会自动寻找 os.path.join(data_dir, 'Train')
+      data_dir: './data/stage2'
+      image_size: 256
+      num_workers: 4            # 数据读取线程数
+    training:
+      # 这里的 batch_size 是 "有多少张不同的原图"
+      # 实际进显卡的 Batch = batch_size * group_size
+      # 示例: 设为 4，group_size 为 4，则显存中实际处理 16 张图
+      batch_size: 4

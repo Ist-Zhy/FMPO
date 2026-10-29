@@ -1,0 +1,39 @@
+Diffusion:
+  dim: 64
+  image_size: 256
+  sampling_timesteps: 1
+  objective: 'pred_res'
+  loss_type: 'l1'
+  condition: True
+  sum_scale: 1
+  input_condition: False
+  input_condition_mask: False
+  num_unet: 1
+  test_res_or_noise: "res"
+
+Train_parameters:
+  num_samples: 1
+  train_num_steps: 30000
+  gradient_accumulate_every: 1
+  ema_decay: 0.995
+  amp: False
+  condition: True
+  save_and_sample_every: 1000
+  results_folder: './results/Fusion_64'
+  Experiment_folder: './Experiment/Fusion_64'
+Dataset_Configs:
+  IVF:
+    training:
+      patch_n: 4          # 生成多少个随机 crop
+      batch_size: 4      # 训练批量大小
+      parse_patches: True
+    data:
+      data_dir: './data/stage1'
+      data_name: 'Val'
+      image_size: 256    # patch size
+      num_workers: 2     # 线程数
+    sampling:
+      batch_size: 1      # 采样批量大小
+    task_type: 'IVF'
+
+

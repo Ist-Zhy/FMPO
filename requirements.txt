@@ -1,0 +1,17 @@
+# Install matching PyTorch and torchvision separately; see README.
+accelerate==1.4.0
+Augmentor==0.2.12
+einops==0.8.1
+ema-pytorch==0.7.7
+natsort==8.4.0
+numpy
+opencv-python==4.11.0.86
+open-clip-torch==3.2.0
+peft==0.18.1
+Pillow
+PyYAML
+scikit-image==0.25.2
+scikit-learn==1.6.1
+scipy
+tqdm
+matplotlib

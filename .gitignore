@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+weights/
+data/
+external/
+results*/
+Experiment*/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+*.onnx
+*.engine
